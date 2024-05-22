@@ -25,8 +25,6 @@ export interface SessionData {
   userId?: string;
   email?: string;
   img?: string;
-  isPro?: boolean;
-  isBlocked?: boolean;
   isLoggedIn: boolean;
 }
 

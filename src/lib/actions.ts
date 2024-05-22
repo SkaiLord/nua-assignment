@@ -5,9 +5,8 @@ import { getIronSession } from 'iron-session';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-let email = 'admin@nuawoman.com';
-let isPro = true;
-let isBlocked = true;
+let email = process.env.ADMIN_EMAIL;
+let password = process.env.ADMIN_PASSWORD;
 
 export const getSession = async () => {
   const session = await getIronSession<SessionData>(cookies(), sessionOptions);
@@ -15,10 +14,6 @@ export const getSession = async () => {
   if (!session.isLoggedIn) {
     session.isLoggedIn = defaultSession.isLoggedIn;
   }
-
-  // CHECK THE USER IN THE DB
-  session.isBlocked = isBlocked;
-  session.isPro = isPro;
 
   return session;
 };
@@ -32,14 +27,13 @@ export const login = async (
   const formEmail = formData.get('email') as string;
   const formPassword = formData.get('password') as string;
 
-  if (formEmail !== email) {
-    console.log(formEmail, email);
+  if (formEmail !== email || formPassword !== password) {
+    // console.log(formEmail, email);
     return { error: 'Wrong Credentials!' };
   }
 
   session.userId = '1';
   session.email = formEmail;
-  session.isPro = isPro;
   session.isLoggedIn = true;
 
   await session.save();
